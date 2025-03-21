@@ -149,3 +149,5 @@ df_by_task = pd.concat(task_dataframes, ignore_index=True)
 df_by_task = df_by_task.drop_duplicates(subset=["model_id"])
 
 df_by_task.to_csv("models_by_task.csv", index=False)
+
+# %%
