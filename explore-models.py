@@ -539,6 +539,12 @@ with tab1:
 # Tab 2: Model Details
 with tab2:
     st.header("Model Details by Task")
+    st.write(
+        "This tab allows you to explore model details for each task. You can view the top models by downloads or parameters, and see their details in a table."
+    )
+    st.warning(
+        "Note: Some models don't have parameter data available. These models are shown as N/A in the parameters column."
+    )
 
     if not selected_tasks:
         st.warning("Please select at least one task in the sidebar.")
@@ -589,12 +595,16 @@ with tab2:
 
             # Sort based on user selection
             if sort_column == "downloads":
-                task_data = task_data.sort_values("downloads", ascending=False)
+                task_data = task_data.sort_values("downloads", ascending=False).head(
+                    max_models_to_show
+                )
+                # Limit to max_models
                 y_column = "downloads"
                 title = f"Top {max_models_to_show} Models by Downloads for Task: {task_name}"
                 y_label = "Number of Downloads (log scale)"
+
             else:  # Parameters
-                task_data = task_data.dropna(subset=["parameters"])
+                # task_data = task_data.dropna(subset=["parameters"])
                 if task_data.empty:
                     fig = go.Figure()
                     fig.add_annotation(
@@ -603,13 +613,14 @@ with tab2:
                     )
                     return fig
 
-                task_data = task_data.sort_values("parameters", ascending=False)
+                task_data = (
+                    task_data.sort_values("downloads", ascending=False)
+                    .head(max_models_to_show)
+                    .sort_values("parameters", ascending=False)
+                )
                 y_column = "parameters"
                 title = f"Top {max_models_to_show} Models by Parameters for Task: {task_name}"
                 y_label = "Number of Parameters (log scale)"
-
-            # Limit to max_models
-            task_data = task_data.head(max_models_to_show)
 
             # Add days_since_creation for coloring if created_at exists
             if "created_at" in task_data.columns:
