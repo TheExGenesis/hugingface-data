@@ -55,3 +55,9 @@ This process may take some time when running for the first time.
 - huggingface_hub
 - tqdm
 - toolz
+
+## Useful dev things
+
+- `source hf-explorer-env/bin/activate`
+- `pip install -r requirements.txt`
+- `streamlit run explore-models.py`
